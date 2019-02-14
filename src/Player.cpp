@@ -1,5 +1,4 @@
 #include "hdr/Player.hpp"
-#include "hdr/areColliding.hpp"
 #include <iostream>
 
 const float jumpVertcalVelocity = -25.f;
