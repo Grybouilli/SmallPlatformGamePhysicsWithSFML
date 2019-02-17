@@ -2,6 +2,7 @@
 #include <iostream>
 
 const float jumpVertcalVelocity = -25.f;
+const sf::Time defaultAnimDuration = sf::seconds(3.f);
 
 Player::Player()
 : mShape{}
@@ -31,7 +32,7 @@ Player::Player(TextureHolder& textures)
 	//setting current animation to default: stand position
 	mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Stand)]);
 	mShape.setTexture(texture);
-	mShape.setDuration(sf::seconds(3.f));
+	mShape.setDuration(defaultAnimDuration);
 	mShape.setFirstFrame(playerData->animations.defaultTile);
 
 	setPosition(0, 0);
@@ -53,7 +54,7 @@ Player::Player(TextureHolder& textures, sf::Vector2f position)
 	//setting current animation to default: stand position
 	mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Stand)]);
 	mShape.setTexture(texture);
-	mShape.setDuration(sf::seconds(3.f));
+	mShape.setDuration(defaultAnimDuration);
 	mShape.setFirstFrame(playerData->animations.defaultTile);
 
 	setPosition(position);
@@ -75,7 +76,7 @@ Player::Player(TextureHolder& textures, float x, float y)
 	//setting current animation to default: stand position
 	mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Stand)]);
 	mShape.setTexture(texture);
-	mShape.setDuration(sf::seconds(3.f));
+	mShape.setDuration(defaultAnimDuration);
 	mShape.setFirstFrame(playerData->animations.defaultTile);
 
 	setPosition(x, y);
@@ -96,18 +97,22 @@ void Player::update(sf::Time dt)
 			case PlayerAnimations::Stand :
 				mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Stand)]);
 				mShape.setFirstFrame(playerData->animations.defaultTile);
+				mShape.setDuration(defaultAnimDuration);
 				break;
 			case PlayerAnimations::Walk :
 				mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Walk)]);
 				mShape.setFirstFrame(firstFrame);
+				mShape.setDuration(defaultAnimDuration);
 				break;
 			case PlayerAnimations::Run :
 				mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Run)]);
 				mShape.setFirstFrame(firstFrame);
+				mShape.setDuration(sf::seconds(1.5f));
 				break;
 			case PlayerAnimations::Jump :
 				mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Jump)]);
 				mShape.setFirstFrame(firstFrame);
+				mShape.setDuration(defaultAnimDuration);
 				break;
 		}
 
@@ -141,6 +146,13 @@ void Player::handleEvent(const sf::Event& event)
 				mPendingState = PlayerAnimations::Jump;
 				jump();
 				break;
+			case sf::Keyboard::Return:
+				if(mVelocity.x != 0.f && mCurrentState != PlayerAnimations::Run)
+				{
+					mVelocity.x *= 1.7f;
+					mPendingState = PlayerAnimations::Run;
+				}
+				break;
 			case sf::Keyboard::Left:
 				mPendingState = PlayerAnimations::Walk;
 				mVelocity.x = -20.f;
@@ -159,6 +171,12 @@ void Player::handleEvent(const sf::Event& event)
 	//if a specific key is released, we set the pending state to default
 	if(event.type == sf::Event::KeyReleased)
 	{
+		if(event.key.code == sf::Keyboard::Return && mVelocity.x != 0.f)
+		{
+			mPendingState = PlayerAnimations::Walk;
+			mVelocity.x *= 1.f / 1.7f;
+		}
+
 		if(event.key.code == sf::Keyboard::Space
 		|| event.key.code == sf::Keyboard::Left
 		|| event.key.code == sf::Keyboard::Right)
