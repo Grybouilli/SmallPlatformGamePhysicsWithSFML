@@ -176,8 +176,8 @@ bool Player::isBottomCollided(sf::FloatRect target)
 		return false;
 
 	sf::FloatRect bounds { mShape.getGlobalBounds() };
+	bounds.left += 15.f; //reduces width range for bottom collision
 	bounds = getTransform().transformRect(bounds);
-	bounds.left += 15.f;
 
 	if(bounds.intersects(target))
 	{
