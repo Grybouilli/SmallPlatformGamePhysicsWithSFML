@@ -146,7 +146,7 @@ void Player::handleEvent(const sf::Event& event)
 				mPendingState = PlayerAnimations::Jump;
 				jump();
 				break;
-			case sf::Keyboard::Return:
+			case sf::Keyboard::Tab:
 				if(mVelocity.x != 0.f && mCurrentState != PlayerAnimations::Run)
 				{
 					mVelocity.x *= 1.7f;
@@ -171,7 +171,7 @@ void Player::handleEvent(const sf::Event& event)
 	//if a specific key is released, we set the pending state to default
 	if(event.type == sf::Event::KeyReleased)
 	{
-		if(event.key.code == sf::Keyboard::Return && mVelocity.x != 0.f)
+		if(event.key.code == sf::Keyboard::Tab && mVelocity.x != 0.f)
 		{
 			mPendingState = PlayerAnimations::Walk;
 			mVelocity.x *= 1.f / 1.7f;
