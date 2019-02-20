@@ -1,7 +1,9 @@
 #include "hdr/Player.hpp"
 #include <iostream>
 
-const float jumpVertcalVelocity = -25.f;
+const float jumpVertcalVelocity = -20.f;
+const float horizontalWalkSpeed = 40.f;
+const float runFactor = 1.7f;
 const sf::Time defaultAnimDuration = sf::seconds(3.f);
 
 Player::Player()
@@ -150,29 +152,17 @@ void Player::handleEvent(const sf::Event& event)
 			//checking for current state to avoid infinit horizontal velocity
 				if(mCurrentState != PlayerAnimations::Run)
 				{
-					mVelocity.x *= 1.7f;
+					mVelocity.x *= runFactor;
 					mPendingState = PlayerAnimations::Run;
 				}
 				break;
 			case sf::Keyboard::Left:
-			//checking if running key is being pressed
-				mPendingState = mCurrentState == PlayerAnimations::Run ?
-				mCurrentState : PlayerAnimations::Walk;
-				mVelocity.x = -20.f;
-				if(mCurrentState == PlayerAnimations::Run)
-				{
-					mVelocity.x *= 1.7f;
-				}
+				mVelocity.x = -horizontalWalkSpeed;
+				checkForRunState(); //keeps player running if tab was pressed before left key
 				break;
 			case sf::Keyboard::Right:
-			//checking if running key is being pressed
-				mPendingState = mCurrentState == PlayerAnimations::Run ?
-				mCurrentState : PlayerAnimations::Walk;
-				mVelocity.x = 20.f;
-				if(mCurrentState == PlayerAnimations::Run)
-				{
-					mVelocity.x *= 1.7f;
-				}
+				mVelocity.x = horizontalWalkSpeed;
+				checkForRunState();  //keeps player running if tab was pressed before right key
 				break;
 			default:
 			//if any other key is triggered, we set the pending state to default
@@ -189,7 +179,7 @@ void Player::handleEvent(const sf::Event& event)
 		if(event.key.code == sf::Keyboard::Tab && mVelocity.x != 0.f)
 		{
 			mPendingState = PlayerAnimations::Walk;
-			mVelocity.x *= 1.f / 1.7f;
+			mVelocity.x = horizontalWalkSpeed;
 		}
 		else if( event.key.code == sf::Keyboard::Space
 		|| event.key.code == sf::Keyboard::Left
@@ -233,6 +223,17 @@ void Player::jump()
 	mBottomCollided = false;
 }
 
+void Player::checkForRunState()
+{
+	//checking if running key is being pressed
+	mPendingState = mCurrentState == PlayerAnimations::Run ?
+	mCurrentState : PlayerAnimations::Walk;
+	if(mCurrentState == PlayerAnimations::Run)
+	{
+		mVelocity.x *= runFactor;
+	}
+}
+
 void Player::applyForces(sf::Time dt)
 {
 	float newY { 0.f };
@@ -243,8 +244,8 @@ void Player::applyForces(sf::Time dt)
 		float t { mInAirTime.asSeconds() };
 		newY = 5 * t * t + mInitialJumpVelocity.y * t;
 	}
-	//factor of +20% to make the jump quicker
-	mVelocity.y = newY * 1.5f;
+	//factor of +50% to make the jump quicker
+	mVelocity.y = newY * 2.5f;
 
 	move(mVelocity * dt.asSeconds());
 }

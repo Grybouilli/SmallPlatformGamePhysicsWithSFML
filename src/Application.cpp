@@ -1,7 +1,7 @@
 #include "hdr/Application.hpp"
 
 Application::Application()
-: mWindow{ sf::VideoMode(1200, 1200), "Animating Stuff", sf::Style::Close | sf::Style::Titlebar }
+: mWindow{ sf::VideoMode(2000, 1200), "Animating Stuff", sf::Style::Close | sf::Style::Titlebar }
 , mTimePerFrame{ sf::seconds(1.f / 60.f) }
 , mTextures {}
 , mPlayer {}
@@ -11,7 +11,7 @@ Application::Application()
 	mPlayer = Player(mTextures);
 	mPlayer.scale(5.f, 5.f);
 	mPlayer.setPosition(0.f, 0.f);
-	mBoxes[0].setSize(sf::Vector2f(1200.f, 10.f));
+	mBoxes[0].setSize(sf::Vector2f(2000.f, 10.f));
 	mBoxes[0].setPosition(0.f, 1000.f);
 	mBoxes[1].setSize(sf::Vector2f(100.f, 80.f));
 	mBoxes[1].setPosition(500.f, 920.f);

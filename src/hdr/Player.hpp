@@ -21,6 +21,7 @@ public:
 
 private:
 	void 				jump();
+	void				checkForRunState();
 	void				applyForces(sf::Time dt);
 	virtual void		draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
