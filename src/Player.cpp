@@ -181,23 +181,22 @@ void Player::handleEvent(const sf::Event& event)
 				break;
 		}
 	}
-	//if a specific key is released, we set the pending state to default
+
+	//handles release of keys
 	if(event.type == sf::Event::KeyReleased)
 	{
+		// if still walking
 		if(event.key.code == sf::Keyboard::Tab && mVelocity.x != 0.f)
 		{
 			mPendingState = PlayerAnimations::Walk;
 			mVelocity.x *= 1.f / 1.7f;
-		} else
-		{
-			mPendingState = PlayerAnimations::Stand;
-			mVelocity = sf::Vector2f(0.f, 0.f);
 		}
-
-		if(event.key.code == sf::Keyboard::Space
+		else if( event.key.code == sf::Keyboard::Space
 		|| event.key.code == sf::Keyboard::Left
-		|| event.key.code == sf::Keyboard::Right)
+		|| event.key.code == sf::Keyboard::Right
+		|| event.key.code == sf::Keyboard::Tab)
 		{
+			//not walking anymore, not doing anything
 			mPendingState = PlayerAnimations::Stand;
 			mVelocity = sf::Vector2f(0.f, 0.f);
 		}
