@@ -147,19 +147,29 @@ void Player::handleEvent(const sf::Event& event)
 				jump();
 				break;
 			case sf::Keyboard::Tab:
-				if(mVelocity.x != 0.f && mCurrentState != PlayerAnimations::Run)
+				if(mCurrentState != PlayerAnimations::Run)
 				{
 					mVelocity.x *= 1.7f;
 					mPendingState = PlayerAnimations::Run;
 				}
 				break;
 			case sf::Keyboard::Left:
-				mPendingState = PlayerAnimations::Walk;
+				mPendingState = mCurrentState == PlayerAnimations::Run ?
+				mCurrentState : PlayerAnimations::Walk;
 				mVelocity.x = -20.f;
+				if(mCurrentState == PlayerAnimations::Run)
+				{
+					mVelocity *= 1.7f;
+				}
 				break;
 			case sf::Keyboard::Right:
-				mPendingState = PlayerAnimations::Walk;
+				mPendingState = mCurrentState == PlayerAnimations::Run ?
+				mCurrentState : PlayerAnimations::Walk;
 				mVelocity.x = 20.f;
+				if(mCurrentState == PlayerAnimations::Run)
+				{
+					mVelocity *= 1.7f;
+				}
 				break;
 			default:
 			//if any other key is triggered, we set the pending state to default
@@ -175,6 +185,10 @@ void Player::handleEvent(const sf::Event& event)
 		{
 			mPendingState = PlayerAnimations::Walk;
 			mVelocity.x *= 1.f / 1.7f;
+		} else
+		{
+			mPendingState = PlayerAnimations::Stand;
+			mVelocity = sf::Vector2f(0.f, 0.f);
 		}
 
 		if(event.key.code == sf::Keyboard::Space
