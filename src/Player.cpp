@@ -147,6 +147,7 @@ void Player::handleEvent(const sf::Event& event)
 				jump();
 				break;
 			case sf::Keyboard::Tab:
+			//checking for current state to avoid infinit horizontal velocity
 				if(mCurrentState != PlayerAnimations::Run)
 				{
 					mVelocity.x *= 1.7f;
@@ -154,21 +155,23 @@ void Player::handleEvent(const sf::Event& event)
 				}
 				break;
 			case sf::Keyboard::Left:
+			//checking if running key is being pressed
 				mPendingState = mCurrentState == PlayerAnimations::Run ?
 				mCurrentState : PlayerAnimations::Walk;
 				mVelocity.x = -20.f;
 				if(mCurrentState == PlayerAnimations::Run)
 				{
-					mVelocity *= 1.7f;
+					mVelocity.x *= 1.7f;
 				}
 				break;
 			case sf::Keyboard::Right:
+			//checking if running key is being pressed
 				mPendingState = mCurrentState == PlayerAnimations::Run ?
 				mCurrentState : PlayerAnimations::Walk;
 				mVelocity.x = 20.f;
 				if(mCurrentState == PlayerAnimations::Run)
 				{
-					mVelocity *= 1.7f;
+					mVelocity.x *= 1.7f;
 				}
 				break;
 			default:
