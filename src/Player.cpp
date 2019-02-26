@@ -1,6 +1,6 @@
 #include "hdr/Player.hpp"
 #include <iostream>
-#include "collidesBottom.hpp"
+#include "hdr/collidesBottom.hpp"
 
 const float jumpVertcalVelocity = -20.f;
 const float horizontalWalkSpeed = 40.f;
@@ -206,14 +206,16 @@ bool Player::isBottomCollided(sf::FloatRect target)
 {
 	//if currently jumping, cannot collide bottom
 	if(mVelocity.y < 0.f)
+	{
+		mBottomCollided = false;
 		return false;
-
+	}
 	sf::FloatRect bounds { mShape.getGlobalBounds() };
 	bounds.left += 15.f; //reduces width range for bottom collision
 	bounds.width -= 15.f;
 	bounds = getTransform().transformRect(bounds);
 
-	if(bounds.intersects(target) && bounds.top + bounds.height < target.top + target.height)
+	if(collidesBottom(target, bounds))
 	{
 		mBottomCollided = true;
 		return mBottomCollided;

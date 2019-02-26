@@ -1,4 +1,3 @@
-#include "collidesBottom.hpp"
 
 bool collidesBottom(sf::FloatRect collider, sf::FloatRect collided)
 {
