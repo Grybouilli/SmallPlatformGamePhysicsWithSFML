@@ -88,7 +88,11 @@ Player::Player(TextureHolder& textures, float x, float y)
 void Player::update(sf::Time dt)
 {
 	auto playerData = &Table[static_cast<int>(EntityType::Player)];
-
+	if(mPendingState == PlayerAnimations::Jump && mBottomCollided)
+	{
+		mPendingState = PlayerAnimations::Stand;
+		mVelocity.x = 0.f;
+	}
 	//if a different state than current was triggered, handles it
 	if(mPendingState != mCurrentState)
 	{
@@ -177,25 +181,20 @@ void Player::handleEvent(const sf::Event& event)
 	//handles release of keys
 	if(event.type == sf::Event::KeyReleased)
 	{
-
-		if(!mBottomCollided)
-		{
-			mCurrentState = PlayerAnimations::Jump;
-		}
+		//x velocity
 		// if still walking
-		else if(event.key.code == sf::Keyboard::Tab && mVelocity.x != 0.f)
+		if(event.key.code == sf::Keyboard::Tab && mVelocity.x != 0.f)
 		{
 			mPendingState = PlayerAnimations::Walk;
 			mVelocity.x = horizontalWalkSpeed;
 		}
-		else if( event.key.code == sf::Keyboard::Space
-		|| event.key.code == sf::Keyboard::Left
+		else if(event.key.code == sf::Keyboard::Left
 		|| event.key.code == sf::Keyboard::Right
 		|| event.key.code == sf::Keyboard::Tab)
 		{
 			//not walking anymore, not doing anything
 			mPendingState = PlayerAnimations::Stand;
-			mVelocity = sf::Vector2f(0.f, 0.f);
+			mVelocity.x = 0.f;
 		}
 	}
 }
