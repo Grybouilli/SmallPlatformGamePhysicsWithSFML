@@ -88,16 +88,9 @@ Player::Player(TextureHolder& textures, float x, float y)
 void Player::update(sf::Time dt)
 {
 	auto playerData = &Table[static_cast<int>(EntityType::Player)];
+
 	//if a different state than current was triggered, handles it
-	if(!mBottomCollided)
-	{
-		sf::IntRect firstFrame = playerData->animations.defaultTile;
-		firstFrame.top = playerData->animations.tileSize.y * static_cast<int>(PlayerAnimations::Jump);
-		mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Jump)]);
-		mShape.setFirstFrame(firstFrame);
-		mShape.setDuration(defaultAnimDuration);
-		mCurrentState = PlayerAnimations::Jump;
-	} else if(mPendingState != mCurrentState)
+	if(mPendingState != mCurrentState)
 	{
 		//position of the textureRect on the sprite sheet depending on the triggered state
 		sf::IntRect firstFrame = playerData->animations.defaultTile;
@@ -184,8 +177,13 @@ void Player::handleEvent(const sf::Event& event)
 	//handles release of keys
 	if(event.type == sf::Event::KeyReleased)
 	{
+
+		if(!mBottomCollided)
+		{
+			mCurrentState = PlayerAnimations::Jump;
+		}
 		// if still walking
-		if(event.key.code == sf::Keyboard::Tab && mVelocity.x != 0.f)
+		else if(event.key.code == sf::Keyboard::Tab && mVelocity.x != 0.f)
 		{
 			mPendingState = PlayerAnimations::Walk;
 			mVelocity.x = horizontalWalkSpeed;
