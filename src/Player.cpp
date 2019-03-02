@@ -36,7 +36,7 @@ Player::Player(TextureHolder& textures)
 	mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Stand)]);
 	mShape.setTexture(texture);
 	mShape.setDuration(defaultAnimDuration);
-	mShape.setFirstFrame(playerData->animations.defaultTile);
+	mShape.setFirstFrame(playerData->animations.defaultTileOR);
 
 	setPosition(0, 0);
 }
@@ -58,7 +58,7 @@ Player::Player(TextureHolder& textures, sf::Vector2f position)
 	mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Stand)]);
 	mShape.setTexture(texture);
 	mShape.setDuration(defaultAnimDuration);
-	mShape.setFirstFrame(playerData->animations.defaultTile);
+	mShape.setFirstFrame(playerData->animations.defaultTileOR);
 
 	setPosition(position);
 }
@@ -80,7 +80,7 @@ Player::Player(TextureHolder& textures, float x, float y)
 	mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Stand)]);
 	mShape.setTexture(texture);
 	mShape.setDuration(defaultAnimDuration);
-	mShape.setFirstFrame(playerData->animations.defaultTile);
+	mShape.setFirstFrame(playerData->animations.defaultTileOR);
 
 	setPosition(x, y);
 }
@@ -96,15 +96,23 @@ void Player::update(sf::Time dt)
 	//if a different state than current was triggered, handles it
 	if(mPendingState != mCurrentState)
 	{
+		sf::IntRect firstFrame {};
 		//position of the textureRect on the sprite sheet depending on the triggered state
-		sf::IntRect firstFrame = playerData->animations.defaultTile;
+		if(mVelocity.x < 0.f)
+		{
+			firstFrame = playerData->animations.defaultTileOL;
+		} else
+		{
+			firstFrame = playerData->animations.defaultTileOR;
+		}
+
 		firstFrame.top = playerData->animations.tileSize.y * static_cast<int>(mPendingState);
 
 		switch(mPendingState)
 		{
 			case PlayerAnimations::Stand :
 				mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Stand)]);
-				mShape.setFirstFrame(playerData->animations.defaultTile);
+				mShape.setFirstFrame(playerData->animations.defaultTileOR);
 				mShape.setDuration(defaultAnimDuration);
 				break;
 			case PlayerAnimations::Walk :

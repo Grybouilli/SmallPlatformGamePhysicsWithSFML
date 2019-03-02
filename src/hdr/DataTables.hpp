@@ -25,7 +25,8 @@ struct AnimationData
 	std::vector<int>	framesPerAnimation;
 
 	sf::Vector2i		tileSize;
-	sf::IntRect			defaultTile;
+	sf::IntRect			defaultTileOR, defaultTileOL;
+	//OR = oriented to the right, OL = oriented to the left
 };
 
 struct EntityData

@@ -19,7 +19,8 @@ std::vector<EntityData> initializeDataTables()
 	animationsData->framesPerAnimation[static_cast<int>(PlayerAnimations::Jump)] = 1;
 
 	animationsData->tileSize = sf::Vector2i(32, 32);
-	animationsData->defaultTile = sf::IntRect(0, 0, 32, 32);
+	animationsData->defaultTileOR = sf::IntRect(0, 0, 32, 32); //OR = oriented to the right
+	animationsData->defaultTileOL = sf::IntRect(128, 0, 32, 32); //OL = oriented to the left
 
 	return table;
 

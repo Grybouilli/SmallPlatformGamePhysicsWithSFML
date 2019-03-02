@@ -84,5 +84,5 @@ void Application::processEvents()
 
 void Application::loadTextures()
 {
-	mTextures.load(Texture::ID::Player, "medias/textures/player.png");
+	mTextures.load(Texture::ID::Player, "medias/textures/fullset_player.png");
 }

@@ -36,7 +36,7 @@ void Animation::update(sf::Time dt)
 		{
 			++mCurrentFrame;
 			mShape.setTextureRect(sf::IntRect(
-				mFrameSize.x * (mCurrentFrame - 1), mFirstFrame.top, mFrameSize.x, mFrameSize.y));
+				mFirstFrame.left + mFrameSize.x * (mCurrentFrame - 1), mFirstFrame.top, mFrameSize.x, mFrameSize.y));
 		} else
 		{
 			mCurrentFrame = 1;
