@@ -1,5 +1,6 @@
 #include "hdr/Player.hpp"
 #include <iostream>
+#include "hdr/collidesBottom.hpp"
 
 const float jumpVertcalVelocity = -20.f;
 const float horizontalWalkSpeed = 40.f;
@@ -87,16 +88,13 @@ Player::Player(TextureHolder& textures, float x, float y)
 void Player::update(sf::Time dt)
 {
 	auto playerData = &Table[static_cast<int>(EntityType::Player)];
-	//if a different state than current was triggered, handles it
-	if(!mBottomCollided)
+	if(mPendingState == PlayerAnimations::Jump && mBottomCollided)
 	{
-		sf::IntRect firstFrame = playerData->animations.defaultTile;
-		firstFrame.top = playerData->animations.tileSize.y * static_cast<int>(PlayerAnimations::Jump);
-		mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Jump)]);
-		mShape.setFirstFrame(firstFrame);
-		mShape.setDuration(defaultAnimDuration);
-		mCurrentState = PlayerAnimations::Jump;
-	} else if(mPendingState != mCurrentState)
+		mPendingState = PlayerAnimations::Stand;
+		mVelocity.x = 0.f;
+	}
+	//if a different state than current was triggered, handles it
+	if(mPendingState != mCurrentState)
 	{
 		//position of the textureRect on the sprite sheet depending on the triggered state
 		sf::IntRect firstFrame = playerData->animations.defaultTile;
@@ -183,20 +181,20 @@ void Player::handleEvent(const sf::Event& event)
 	//handles release of keys
 	if(event.type == sf::Event::KeyReleased)
 	{
+		//x velocity
 		// if still walking
 		if(event.key.code == sf::Keyboard::Tab && mVelocity.x != 0.f)
 		{
 			mPendingState = PlayerAnimations::Walk;
 			mVelocity.x = horizontalWalkSpeed;
 		}
-		else if( event.key.code == sf::Keyboard::Space
-		|| event.key.code == sf::Keyboard::Left
+		else if(event.key.code == sf::Keyboard::Left
 		|| event.key.code == sf::Keyboard::Right
 		|| event.key.code == sf::Keyboard::Tab)
 		{
 			//not walking anymore, not doing anything
 			mPendingState = PlayerAnimations::Stand;
-			mVelocity = sf::Vector2f(0.f, 0.f);
+			mVelocity.x = 0.f;
 		}
 	}
 }
@@ -205,14 +203,16 @@ bool Player::isBottomCollided(sf::FloatRect target)
 {
 	//if currently jumping, cannot collide bottom
 	if(mVelocity.y < 0.f)
+	{
+		mBottomCollided = false;
 		return false;
-
+	}
 	sf::FloatRect bounds { mShape.getGlobalBounds() };
 	bounds.left += 15.f; //reduces width range for bottom collision
 	bounds.width -= 15.f;
 	bounds = getTransform().transformRect(bounds);
 
-	if(bounds.intersects(target) && bounds.top + bounds.height < target.top + target.height)
+	if(collidesBottom(target, bounds))
 	{
 		mBottomCollided = true;
 		return mBottomCollided;
