@@ -97,7 +97,7 @@ void Player::update(sf::Time dt)
 	if(mPendingState != mCurrentState)
 	{
 		sf::IntRect firstFrame {};
-		//position of the textureRect on the sprite sheet depending on the triggered state
+		//position of the textureRect on the sprite sheet depending on the horizontal orientation
 		if(mVelocity.x < 0.f)
 		{
 			firstFrame = playerData->animations.defaultTileOL;
@@ -108,6 +108,7 @@ void Player::update(sf::Time dt)
 
 		firstFrame.top = playerData->animations.tileSize.y * static_cast<int>(mPendingState);
 
+		//position of the textureRect on the sprite sheet depending on the triggered state
 		switch(mPendingState)
 		{
 			case PlayerAnimations::Stand :
