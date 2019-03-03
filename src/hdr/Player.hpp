@@ -38,6 +38,7 @@ private:
 	sf::Time			mInAirTime;
 
 	bool				mBottomCollided;
+	bool				mIsJumping;
 };
 
 #endif

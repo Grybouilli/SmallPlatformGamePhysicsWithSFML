@@ -5,7 +5,7 @@
 const float jumpVertcalVelocity = -20.f;
 const float horizontalWalkSpeed = 40.f;
 const float runFactor = 1.7f;
-const sf::Time defaultAnimDuration = sf::seconds(3.f);
+const sf::Time defaultAnimDuration = sf::seconds(2.f);
 
 Player::Player()
 : mShape{}
@@ -15,6 +15,7 @@ Player::Player()
 , mVelocity { 0, 0 }
 , mInitialJumpVelocity { 0, jumpVertcalVelocity }
 , mBottomCollided { false }
+, mIsJumping { false }
 {
 
 }
@@ -27,6 +28,7 @@ Player::Player(TextureHolder& textures)
 , mVelocity { 0, 0 }
 , mInitialJumpVelocity { 0, jumpVertcalVelocity }
 , mBottomCollided { false }
+, mIsJumping { false }
 {
 	//taking texture from resources
 	auto playerData = &Table[static_cast<int>(EntityType::Player)];
@@ -49,6 +51,7 @@ Player::Player(TextureHolder& textures, sf::Vector2f position)
 , mVelocity { 0, 0 }
 , mInitialJumpVelocity { 0, jumpVertcalVelocity }
 , mBottomCollided { false }
+, mIsJumping { false }
 {
 	//taking texture from resources
 	auto playerData = &Table[static_cast<int>(EntityType::Player)];
@@ -71,6 +74,7 @@ Player::Player(TextureHolder& textures, float x, float y)
 , mVelocity { 0, 0 }
 , mInitialJumpVelocity { 0, jumpVertcalVelocity }
 , mBottomCollided { false }
+, mIsJumping { false }
 {
 	//taking texture from resources
 	auto playerData = &Table[static_cast<int>(EntityType::Player)];
@@ -124,7 +128,7 @@ void Player::update(sf::Time dt)
 			case PlayerAnimations::Run :
 				mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Run)]);
 				mShape.setFirstFrame(firstFrame);
-				mShape.setDuration(sf::seconds(1.5f));
+				mShape.setDuration(sf::seconds(1.f));
 				break;
 			case PlayerAnimations::Jump :
 				mShape.setFramesNumber(playerData->animations.framesPerAnimation[static_cast<int>(PlayerAnimations::Jump)]);
@@ -223,6 +227,7 @@ bool Player::isBottomCollided(sf::FloatRect target)
 
 	if(collidesBottom(target, bounds))
 	{
+		mIsJumping = false;
 		mBottomCollided = true;
 		return mBottomCollided;
 	} else
@@ -239,6 +244,7 @@ void Player::jump()
 	//setting mBottomCollided to false because player is going to be in the air
 	mVelocity.y = mInitialJumpVelocity.y;
 	mBottomCollided = false;
+	mIsJumping = true;
 }
 
 void Player::checkForRunState()
@@ -257,12 +263,16 @@ void Player::applyForces(sf::Time dt)
 	float newY { 0.f };
 
 	//if player is in the air, weight is applied
-	if(!mBottomCollided)
+	if(!mBottomCollided && mIsJumping)
 	{
 		float t { mInAirTime.asSeconds() };
-		newY = 5 * t * t + mInitialJumpVelocity.y * t;
+		newY = 5 * t * t + mInitialJumpVelocity.y * t; //mInitialJumVelocity.y < 0
+	} else if(!mBottomCollided && !mIsJumping)
+	{
+		float t { mInAirTime.asSeconds() };
+		newY = 5 * t * t - mInitialJumpVelocity.y;
 	}
-	//factor of +50% to make the jump quicker
+	//growing the y velocity to make the jump quicker
 	mVelocity.y = newY * 2.5f;
 
 	move(mVelocity * dt.asSeconds());
