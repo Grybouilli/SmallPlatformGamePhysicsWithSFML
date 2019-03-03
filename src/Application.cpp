@@ -5,7 +5,7 @@ Application::Application()
 , mTimePerFrame{ sf::seconds(1.f / 60.f) }
 , mTextures {}
 , mPlayer {}
-, mBoxes {3}
+, mBoxes {5}
 {
 	loadTextures();
 	mPlayer = Player(mTextures);
@@ -16,11 +16,15 @@ Application::Application()
 	mBoxes[1].setSize(sf::Vector2f(100.f, 80.f));
 	mBoxes[1].setPosition(500.f, 920.f);
 	mBoxes[2].setSize(sf::Vector2f(100.f, 80.f));
-	mBoxes[2].setPosition(620.f, 830.f);
-	std::sort(mBoxes.begin(), mBoxes.end(), [=](sf::RectangleShape r1, sf::RectangleShape r2)
-	{
-		return r1.getPosition().y < r2.getPosition().y;
-	});
+	mBoxes[2].setPosition(mBoxes[1].getPosition().x + 100.f, mBoxes[1].getPosition().y - 80.f);
+	mBoxes[3].setSize(sf::Vector2f(100.f, 80.f));
+	mBoxes[3].setPosition(mBoxes[2].getPosition().x + 100.f, mBoxes[2].getPosition().y - 80.f);
+	mBoxes[4].setSize(sf::Vector2f(100.f, 80.f));
+	mBoxes[4].setPosition(mBoxes[3].getPosition().x + 100.f, mBoxes[3].getPosition().y - 80.f);
+	// std::sort(mBoxes.begin(), mBoxes.end(), [=](sf::RectangleShape r1, sf::RectangleShape r2)
+	// {
+	// 	return r1.getPosition().y < r2.getPosition().y;
+	// });
 }
 
 void Application::run()
