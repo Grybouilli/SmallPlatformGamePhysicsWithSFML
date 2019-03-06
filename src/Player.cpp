@@ -98,20 +98,25 @@ void Player::update(sf::Time dt)
 		mVelocity.x = 0.f;
 	}
 	//if a different state than current was triggered, handles it
+	sf::IntRect firstFrame {};
+	//position of the textureRect on the sprite sheet depending on the horizontal orientation
+	if(mVelocity.x < 0.f)
+	{
+		firstFrame = playerData->animations.defaultTileOL;
+	} else
+	{
+		firstFrame = playerData->animations.defaultTileOR;
+	}
+
+	firstFrame.top = playerData->animations.tileSize.y * static_cast<int>(mPendingState);
+
+	if(mShape.getFirstFrame() != firstFrame)
+	{
+		mShape.setFirstFrame(firstFrame);
+	}
+
 	if(mPendingState != mCurrentState)
 	{
-		sf::IntRect firstFrame {};
-		//position of the textureRect on the sprite sheet depending on the horizontal orientation
-		if(mVelocity.x < 0.f)
-		{
-			firstFrame = playerData->animations.defaultTileOL;
-		} else
-		{
-			firstFrame = playerData->animations.defaultTileOR;
-		}
-
-		firstFrame.top = playerData->animations.tileSize.y * static_cast<int>(mPendingState);
-
 		//position of the textureRect on the sprite sheet depending on the triggered state
 		switch(mPendingState)
 		{
