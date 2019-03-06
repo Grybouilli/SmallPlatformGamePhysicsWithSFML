@@ -267,13 +267,14 @@ void Player::applyForces(sf::Time dt)
 {
 	float newY { 0.f };
 
-	//if player is in the air, weight is applied
+	//if player is in the air, weight is applied and has jumped
 	if(!mBottomCollided && mIsJumping)
 	{
 		float t { mInAirTime.asSeconds() };
 		newY = 5 * t * t + mInitialJumpVelocity.y * t; //mInitialJumVelocity.y < 0
 	} else if(!mBottomCollided && !mIsJumping)
 	{
+		//if player is just falling (no jump triggered)
 		float t { mInAirTime.asSeconds() };
 		newY = 5 * t * t - mInitialJumpVelocity.y;
 	}
