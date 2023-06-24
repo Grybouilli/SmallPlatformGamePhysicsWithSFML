@@ -84,5 +84,5 @@ void Application::processEvents()
 
 void Application::loadTextures()
 {
-	mTextures.load(Texture::ID::Player, "/home/grybouilli/projects/animation_for_platform_game/medias/textures/fullset_player.png");
+	mTextures.load(Texture::ID::Player, "./medias/textures/fullset_player.png");
 }
