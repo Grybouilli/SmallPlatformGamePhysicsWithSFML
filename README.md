@@ -24,3 +24,4 @@ SFML and make are required. You can use the `build.sh` script according to the f
 ./build.sh rebuild [Debug, Release]  # clean current work and buld from scratch
 ./build.sh buildrun [Debug, Release] # build and run the program
 ./build.sh run [Debug, Release]      # run the program
+```
